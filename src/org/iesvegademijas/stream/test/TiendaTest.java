@@ -115,9 +115,12 @@ class TiendaTest {
 		try {
 			prodHome.beginTransaction();
 			
-			List<Producto> listProd = prodHome.findAll();
+			List<Producto> listProd = prodHome.findAll(); //para conseguir la coleccion producto
 			
 			//TODO STREAMS
+			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + "\n").collect(toList());
+			System.out.println(listaNombrePrecio);
+
 	
 			
 			prodHome.commitTransaction();
