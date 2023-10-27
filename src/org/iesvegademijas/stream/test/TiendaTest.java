@@ -122,10 +122,7 @@ class TiendaTest {
 			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
 			System.out.println(listaNombrePrecio);
 
-
-
 			prodHome.commitTransaction();
-
 
 			Set <String[]> setNombrePrecio = listProd.stream()
 					.map(producto -> new String []{producto.getNombre(), Double.toString(producto.getPrecio())})
@@ -155,8 +152,7 @@ class TiendaTest {
 		try {
 			prodHome.beginTransaction();			
 			List<Producto> listProd = prodHome.findAll();
-			
-//			List <String> listaNombrePrecioDolares = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + (p.getPrecio() * 1.2) + " dólares \n").collect(toList());
+
 
 			List <Double> listaPrecioEuros = listProd.stream().map(Producto::getPrecio).collect(toList());
 			List <Double> listaPrecioDolares = listProd.stream().map(p -> p.getPrecio() * 1.2).collect(toList());
@@ -191,22 +187,24 @@ class TiendaTest {
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();
-			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
-			//TODO STREAMS
 
-			List <String> listaNombrePrecioMayus = listProd.stream().map(p -> "Nombre: " + p.getNombre().toUpperCase() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
+
+			List <String> listaNombrePrecioMayus = listProd.stream()
+					.map(p -> "Nombre: " + p.getNombre().toUpperCase() + "  - Precio: " + p.getPrecio() + " euros \n")
+					.collect(toList());
 			System.out.println(listaNombrePrecioMayus);
 
-//			String nombre1normal = listaNombrePrecio.get(0);
-//			String nombre1mayus = listaNombrePrecio.get(0).toUpperCase();
-//			System.out.println(nombre1normal + ", " +  nombre1mayus);
+			List<String> listaNombres = listProd.stream()
+					.map(producto -> producto.getNombre())
+					.collect(toList());
 
-			//Assertions.assertEquals(listaNombrePrecio.get(0).toUpperCase(), listaNombrePrecioMayus.get(0));
+			String nombre1normal = listaNombres.get(0);
+			String nombre1mayus = listaNombres.get(0).toUpperCase();
+			System.out.println(nombre1normal + ", " +  nombre1mayus);
 
-
+			Assertions.assertEquals(nombre1normal.toUpperCase(), nombre1mayus);
 
 			prodHome.commitTransaction();
-
 
 		}
 		catch (RuntimeException e) {
@@ -231,7 +229,7 @@ class TiendaTest {
 			List<String> nombresFabricantes = listFab.stream().map(fab -> fab.getNombre().substring(0,2)).collect(toList());
 
 			Assertions.assertEquals("As", nombresFabricantes.get(0));
-
+			//Las dos primeras letras del fabricante Asus
 
 			fabHome.commitTransaction();
 		}
@@ -254,9 +252,16 @@ class TiendaTest {
 	
 			List<Fabricante> listFab = fabHome.findAll();
 
+			List<Fabricante> listaProductosDeFabricante = listFab.stream()
+					.filter(f -> !f.getProductos().isEmpty())
+							.collect(toList());
 
-			//TODO STREAMS
-		
+			System.out.println("Lista de productos que tiene cada " +
+							"fabricante: " + listaProductosDeFabricante);
+
+			Assertions.assertEquals(1, listaProductosDeFabricante.get(0).getCodigo());
+			//El fabricante con el código 1 es Asus
+
 			fabHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -293,22 +298,30 @@ class TiendaTest {
 	 */
 	@Test
 	void test7() {
-	
+	//en la misma lista
 		ProductoHome prodHome = new ProductoHome();	
 		try {
 			prodHome.beginTransaction();
 		
-			List<Producto> listProd = prodHome.findAll();		
-						
-			//TODO STREAMS
-			
+			List<Producto> listProd = prodHome.findAll();
+
+			listProd.stream().sorted(comparing(Producto::getNombre).
+					thenComparing(comparing(Producto::getPrecio).reversed()))
+					.map(p -> p.getNombre() + " - " + p.getPrecio()).
+					forEach(s -> System.out.println(s));
+
+			Assertions.assertEquals(86.99, listProd.get(0).getPrecio());
+
 			prodHome.commitTransaction();
+
+
 		}
 		catch (RuntimeException e) {
 			prodHome.rollbackTransaction();
 		    throw e; // or display error message
 		}
-		
+
+
 	}
 	
 	/**
