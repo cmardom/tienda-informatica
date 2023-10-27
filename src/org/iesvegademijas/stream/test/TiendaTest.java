@@ -284,8 +284,16 @@ class TiendaTest {
 			List<Fabricante> listFab = fabHome.findAll();
 					
 			//TODO STREAMS
-		
+
+			List<String> listaNombres = listFab.stream()
+							.sorted(comparing(Fabricante::getNombre).reversed())
+					.map(fabricante -> fabricante.getNombre())
+									.collect(toList());
 			fabHome.commitTransaction();
+
+			System.out.println(listaNombres);
+			Assertions.assertEquals("Xiaomi", listaNombres.get(0));
+			//El primer fabricante es Xiaomi al ser ordenado en nombre descendente
 		}
 		catch (RuntimeException e) {
 			fabHome.rollbackTransaction();
