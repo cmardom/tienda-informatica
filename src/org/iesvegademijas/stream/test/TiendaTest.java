@@ -16,6 +16,8 @@ import org.iesvegademijas.hibernate.Fabricante;
 import org.iesvegademijas.hibernate.FabricanteHome;
 import org.iesvegademijas.hibernate.Producto;
 import org.iesvegademijas.hibernate.ProductoHome;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
@@ -117,13 +119,21 @@ class TiendaTest {
 			
 			List<Producto> listProd = prodHome.findAll(); //para conseguir la coleccion producto
 			
-			//TODO STREAMS
-			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + "\n").collect(toList());
+			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
 			System.out.println(listaNombrePrecio);
 
-	
-			
+
+
 			prodHome.commitTransaction();
+
+
+			Set <String[]> setNombrePrecio = listProd.stream()
+					.map(producto -> new String []{producto.getNombre(), Double.toString(producto.getPrecio())})
+					.collect(toSet()); // mejor usar lista que set
+
+			System.out.println("Tamaño de la lista : " + listProd.size());
+			Assertions.assertEquals(11, listProd.size());
+
 		}
 		catch (RuntimeException e) {
 			prodHome.rollbackTransaction();
@@ -146,8 +156,20 @@ class TiendaTest {
 			prodHome.beginTransaction();			
 			List<Producto> listProd = prodHome.findAll();
 			
-			//TODO STREAMS
-			
+//			List <String> listaNombrePrecioDolares = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + (p.getPrecio() * 1.2) + " dólares \n").collect(toList());
+
+			List <Double> listaPrecioEuros = listProd.stream().map(Producto::getPrecio).collect(toList());
+			List <Double> listaPrecioDolares = listProd.stream().map(p -> p.getPrecio() * 1.2).collect(toList());
+
+			Double precioDolaresPrimerProducto = listaPrecioDolares.get(0);
+			Double precioEurosPrimerProducto = listaPrecioEuros.get(0);
+
+			System.out.println("Precio en euros del primer producto: " + precioEurosPrimerProducto);
+			System.out.println("Precio en dolares del primer producto: " + precioDolaresPrimerProducto);
+			Assertions.assertEquals(precioDolaresPrimerProducto, precioEurosPrimerProducto * 1.2);
+
+
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -168,11 +190,24 @@ class TiendaTest {
 		try {
 			prodHome.beginTransaction();
 		
-			List<Producto> listProd = prodHome.findAll();		
-						
+			List<Producto> listProd = prodHome.findAll();
+			List <String> listaNombrePrecio = listProd.stream().map(p -> "Nombre: " + p.getNombre() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
 			//TODO STREAMS
-		
+
+			List <String> listaNombrePrecioMayus = listProd.stream().map(p -> "Nombre: " + p.getNombre().toUpperCase() + "  - Precio: " + p.getPrecio() + " euros \n").collect(toList());
+			System.out.println(listaNombrePrecioMayus);
+
+//			String nombre1normal = listaNombrePrecio.get(0);
+//			String nombre1mayus = listaNombrePrecio.get(0).toUpperCase();
+//			System.out.println(nombre1normal + ", " +  nombre1mayus);
+
+			//Assertions.assertEquals(listaNombrePrecio.get(0).toUpperCase(), listaNombrePrecioMayus.get(0));
+
+
+
 			prodHome.commitTransaction();
+
+
 		}
 		catch (RuntimeException e) {
 			prodHome.rollbackTransaction();
@@ -193,9 +228,11 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
-			//TODO STREAMS
-					
+			List<String> nombresFabricantes = listFab.stream().map(fab -> fab.getNombre().substring(0,2)).collect(toList());
+
+			Assertions.assertEquals("As", nombresFabricantes.get(0));
+
+
 			fabHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -216,7 +253,8 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
+
+
 			//TODO STREAMS
 		
 			fabHome.commitTransaction();
