@@ -400,9 +400,13 @@ class TiendaTest {
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();		
-						
-			//TODO STREAMS
-				
+						/*********ARREGLAR***********/
+			List<Producto> productoMasBarato = listProd.stream()
+							.sorted(comparing(Producto::getPrecio))
+									.collect(toList());
+
+			System.out.println(productoMasBarato);
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
