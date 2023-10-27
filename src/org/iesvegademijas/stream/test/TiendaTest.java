@@ -282,12 +282,10 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
-			//TODO STREAMS
 
 			List<String> listaNombres = listFab.stream()
 							.sorted(comparing(Fabricante::getNombre).reversed())
-					.map(fabricante -> fabricante.getNombre())
+					.map(Fabricante::getNombre)
 									.collect(toList());
 			fabHome.commitTransaction();
 
@@ -346,6 +344,13 @@ class TiendaTest {
 			List<Fabricante> listFab = fabHome.findAll();
 					
 			//TODO STREAMS
+			List<Fabricante> cincoPrimeros = listFab.stream()
+							.limit(5)
+									.collect(toList());
+
+			System.out.println(cincoPrimeros);
+
+			Assertions.assertEquals(5, cincoPrimeros.size());
 		
 			fabHome.commitTransaction();
 		}
