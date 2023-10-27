@@ -342,8 +342,7 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
-			//TODO STREAMS
+
 			List<Fabricante> cincoPrimeros = listFab.stream()
 							.limit(5)
 									.collect(toList());
@@ -351,6 +350,7 @@ class TiendaTest {
 			System.out.println(cincoPrimeros);
 
 			Assertions.assertEquals(5, cincoPrimeros.size());
+			//Se comprueba tamaño
 		
 			fabHome.commitTransaction();
 		}
@@ -372,9 +372,15 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
-			//TODO STREAMS
-		
+
+			List<Fabricante> terceroYCuarto = listFab.stream()
+					.limit(4)
+					.skip(2)
+					.collect(toList());
+
+			System.out.println(terceroYCuarto);
+			Assertions.assertEquals(4, terceroYCuarto.get(1).getCodigo());
+			//se comprueba que el primero de la lista es el 4, al saltar los dos primeros
 			fabHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
