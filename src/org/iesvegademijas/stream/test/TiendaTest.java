@@ -19,6 +19,7 @@ import org.iesvegademijas.hibernate.ProductoHome;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.ls.LSOutput;
 
 
 class TiendaTest {
@@ -914,8 +915,30 @@ Monitor 27 LED Full HD |199.25190000000003|Asus
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			//TODO STREAMS
-			
+			//TODO STREAMS - ARREGLAR SALIDA
+
+			List<Producto> prod = listProd.stream().filter(p->p.getPrecio() >= 180)
+							.sorted(comparing(Producto::getPrecio))
+									.sorted(comparing(Producto::getNombre))
+											.collect(toList());
+
+
+			System.out.println("Producto        " + "           Precio              " + "Fabricante  ");
+			System.out.println("--------------------------------------------------------------------");
+            for (Producto producto : prod) {
+				System.out.print(producto.getNombre());
+				for (int i = producto.getNombre().length(); i <= 31 ; i++) {
+					System.out.print(" ");
+				}
+				System.out.print("|");
+
+				}
+
+
+//			prod.stream().forEach(p-> p.getNombre() + " | " + p.getPrecio() + " | " + p.getFabricante().getNombre());
+
+
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -988,6 +1011,8 @@ Fabricante: Xiaomi
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
+
+//			List <String> fab = listFab.stream().
 					
 			//TODO STREAMS
 								
