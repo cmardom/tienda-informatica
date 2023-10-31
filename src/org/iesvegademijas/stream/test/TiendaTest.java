@@ -2,6 +2,7 @@ package org.iesvegademijas.stream.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -905,17 +906,32 @@ Portátil Yoga 520      |452.79            |Lenovo
 Portátil Ideapd 320    |359.64000000000004|Lenovo
 Monitor 27 LED Full HD |199.25190000000003|Asus
 
-	 */		
+	 */
+/* Función para usar en el test27 y comprobar si el precio tiene dos decimales
+* Se tiene en cuenta para la salida en tabla */
+	public boolean tieneDosDecimales(double numero) {
+		String numeroStr = Double.toString(numero);
+		String[] partes = numeroStr.split("\\.");
+
+		if (partes.length == 2) {
+			if (partes[1].length() == 2) {
+				// Si se cumple, el número tiene dos decimales
+				return true;
+			}
+		}
+
+		return false;
+	}
 	@Test
 	void test27() {
+
+
 		
 		ProductoHome prodHome = new ProductoHome();	
 		try {
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();
-			
-			//TODO STREAMS - ARREGLAR SALIDA
 
 			List<Producto> prod = listProd.stream().filter(p->p.getPrecio() >= 180)
 							.sorted(comparing(Producto::getPrecio))
@@ -923,21 +939,25 @@ Monitor 27 LED Full HD |199.25190000000003|Asus
 											.collect(toList());
 
 
-			System.out.println("Producto        " + "           Precio              " + "Fabricante  ");
+			System.out.println("Producto        " + "                  Precio              " + "Fabricante  ");
 			System.out.println("--------------------------------------------------------------------");
+
             for (Producto producto : prod) {
 				System.out.print(producto.getNombre());
 				for (int i = producto.getNombre().length(); i <= 31 ; i++) {
 					System.out.print(" ");
 				}
 				System.out.print("|");
+				if (tieneDosDecimales(producto.getPrecio()))
+				{
+					System.out.print(" " + producto.getPrecio() + " | ");
+				} else {
+					System.out.print(" " + producto.getPrecio() + "  | ");
 
 				}
-
-
-//			prod.stream().forEach(p-> p.getNombre() + " | " + p.getPrecio() + " | " + p.getFabricante().getNombre());
-
-
+				System.out.print(producto.getFabricante().getNombre());
+				System.out.println();
+			}
 
 			prodHome.commitTransaction();
 		}
