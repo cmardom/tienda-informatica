@@ -1033,7 +1033,7 @@ Fabricante: Xiaomi
 			List<Fabricante> listFab = fabHome.findAll();
 
 					
-			//TODO STREAMS
+			//Formatear salida: quitar comas y corchetes
 //			Fabricante: Crucial
 //
 //			Productos:
@@ -1041,10 +1041,16 @@ Fabricante: Xiaomi
 //			Memoria RAM DDR4 8GB
 
 			List<String> fabs = listFab.stream()
-
 					.map( fabricante -> "Fabricante: " + fabricante.getNombre() +
-			 "\n" + "\n" + "Productos: " + "\n" + fabricante.getProductos().toString()
+			 				"\n" + "Productos: " + "\n"
+							+ fabricante.getProductos().stream().map(p->" -" + p.getNombre()
+							+ " \n")
+							.collect(toList())
+							+ "\n")
 							.collect(toList());
+
+
+
 
 			System.out.println(fabs);
 			fabHome.commitTransaction();
