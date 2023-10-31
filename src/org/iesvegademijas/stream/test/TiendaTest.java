@@ -1126,7 +1126,9 @@ Fabricante: Xiaomi
 			List<Producto> listProd = prodHome.findAll();		
 						
 			//TODO STREAMS
-			
+			List<Producto> prods= listProd.stream().filter(p-> !p.getFabricante().getProductos().isEmpty()).collect(toList());
+			System.out.println(prods);
+            assertFalse(prods.get(0).getFabricante().getProductos().isEmpty());
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
