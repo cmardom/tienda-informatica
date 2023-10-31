@@ -1032,10 +1032,21 @@ Fabricante: Xiaomi
 	
 			List<Fabricante> listFab = fabHome.findAll();
 
-//			List <String> fab = listFab.stream().
 					
 			//TODO STREAMS
-								
+//			Fabricante: Crucial
+//
+//			Productos:
+//			GeForce GTX 1080 Xtreme
+//			Memoria RAM DDR4 8GB
+
+			List<String> fabs = listFab.stream()
+
+					.map( fabricante -> "Fabricante: " + fabricante.getNombre() +
+			 "\n" + "\n" + "Productos: " + "\n" + fabricante.getProductos().toString()
+							.collect(toList());
+
+			System.out.println(fabs);
 			fabHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
