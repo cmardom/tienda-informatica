@@ -787,21 +787,19 @@ class TiendaTest {
 	void test23() {
 		
 		ProductoHome prodHome = new ProductoHome();
-		FabricanteHome fabHome = new FabricanteHome();
 		try {
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();
-			List<Fabricante> listFab = fabHome.findAll();
 
-			List <Fabricante> nombreCodFab = listFab.stream().sorted(comparing(Fabricante::getNombre)).collect(toList());
-//			List<Producto> productoFab = listProd.stream().sorted(comparing(p -> p.getFabricante())).collect(toList());
+			List <Producto> prods = listProd.stream().sorted(comparing(p->p.getFabricante().getNombre()))
+							.collect(toList());
+
+			System.out.println(prods);
+			Assertions.assertTrue(prods.get(0).getFabricante().getNombre().indexOf("A") == 0);
+			// el primer producto tiene como nombre de fabricante una palabra que empieza por A (asus)
 
 
-			List<Producto> productos = listProd.stream().
-
-			//TODO STREAMS
-			
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -823,8 +821,8 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			//TODO STREAMS
-			
+			List<Producto> prodCaro = listProd.stream().sorted(comparing(Producto::getPrecio).reversed()).limit(1).collect(toList());
+			System.out.println(prodCaro);
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -846,7 +844,11 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			//TODO STREAMS
+			List<Producto> crucial = listProd.stream().filter(p->p.getFabricante().getNombre().equals("Crucial")
+					&& p.getPrecio() > 200).collect(toList());
+
+			System.out.println(crucial);
+			Assertions.assertTrue(crucial.get(0).getPrecio()>200 && crucial.get(0).getFabricante().getNombre().equals("Crucial"));
 			
 			prodHome.commitTransaction();
 		}
@@ -869,8 +871,17 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			//TODO STREAMS
-			
+
+			List<Producto> prods = listProd.stream().filter(p->p.getFabricante().getNombre().equals("Asus")
+			|| p.getFabricante().getNombre().equals("Hewlett-Packard")
+			|| p.getFabricante().getNombre().equals("Seagate"))
+							.collect(toList());
+			System.out.println(prods);
+
+			Assertions.assertTrue(prods.get(0).getFabricante().getNombre().equals("Asus")
+			|| prods.get(0).getFabricante().getNombre().equals("Hewlett-Packard")
+					|| prods.get(0).getFabricante().getNombre().equals("Seagate"));
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
