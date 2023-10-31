@@ -1073,8 +1073,11 @@ Fabricante: Xiaomi
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
-			//TODO STREAMS
+
+			List<Fabricante> fabs = listFab.stream().filter(f -> f.getProductos().isEmpty()).collect(toList());
+			System.out.println(fabs);
+
+			Assertions.assertTrue(fabs.get(0).getProductos().isEmpty());
 								
 			fabHome.commitTransaction();
 		}
@@ -1095,9 +1098,11 @@ Fabricante: Xiaomi
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();		
-						
-			//TODO STREAMS
-			
+
+			long prods = listProd.stream().filter(producto -> !producto.getNombre().isEmpty()).count();
+			System.out.println(prods);
+
+            assertEquals(listProd.size(), prods);
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
