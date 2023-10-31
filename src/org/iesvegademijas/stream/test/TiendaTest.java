@@ -195,7 +195,7 @@ class TiendaTest {
 			System.out.println(listaNombrePrecioMayus);
 
 			List<String> listaNombres = listProd.stream()
-					.map(producto -> producto.getNombre())
+					.map(Producto::getNombre)
 					.collect(toList());
 
 			String nombre1normal = listaNombres.get(0);
@@ -254,7 +254,7 @@ class TiendaTest {
 
 			List<Fabricante> listaProductosDeFabricante = listFab.stream()
 					.filter(f -> !f.getProductos().isEmpty())
-							.collect(toList());
+					.collect(toList());
 
 			System.out.println("Lista de productos que tiene cada " +
 							"fabricante: " + listaProductosDeFabricante);
@@ -285,8 +285,8 @@ class TiendaTest {
 
 			List<String> listaNombres = listFab.stream()
 							.sorted(comparing(Fabricante::getNombre).reversed())
-					.map(Fabricante::getNombre)
-									.collect(toList());
+							.map(Fabricante::getNombre)
+							.collect(toList());
 			fabHome.commitTransaction();
 
 			System.out.println(listaNombres);
@@ -345,7 +345,7 @@ class TiendaTest {
 
 			List<Fabricante> cincoPrimeros = listFab.stream()
 							.limit(5)
-									.collect(toList());
+							.collect(toList());
 
 			System.out.println(cincoPrimeros);
 
@@ -431,8 +431,9 @@ class TiendaTest {
 			List<Producto> listProd = prodHome.findAll();
 			List<Producto> productoMasCaro = listProd.stream()
 					.sorted(comparing(Producto::getPrecio).reversed())
-							.limit(1)
-									.collect(toList());
+					.limit(1)
+					.collect(toList());
+
 			Assertions.assertEquals(755.0, productoMasCaro.get(0).getPrecio());
 			System.out.println("El producto más caro es: "+ productoMasCaro.get(0).getNombre() +
 					" con un precio de: " + productoMasCaro.get(0).getPrecio());
@@ -460,7 +461,7 @@ class TiendaTest {
 			List<Producto> listProd = prodHome.findAll();
 			List<Producto> codigo2 = listProd.stream()
 					.filter( p -> p.getFabricante().getCodigo() == 2)
-			.collect(toList());
+					.collect(toList());
 
 			System.out.println(codigo2);
 			Assertions.assertEquals(2, codigo2.get(0).getFabricante().getCodigo());
@@ -674,7 +675,6 @@ class TiendaTest {
 			fabHome.beginTransaction();
 	
 			List<Fabricante> listFab = fabHome.findAll();
-					
 
 			List<Fabricante> nombreS = listFab.stream().filter(fabricante -> fabricante.getNombre().indexOf("S") == 0).collect(toList());
 			System.out.println(nombreS);
@@ -786,12 +786,20 @@ class TiendaTest {
 	@Test
 	void test23() {
 		
-		ProductoHome prodHome = new ProductoHome();	
+		ProductoHome prodHome = new ProductoHome();
+		FabricanteHome fabHome = new FabricanteHome();
 		try {
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();
-			
+			List<Fabricante> listFab = fabHome.findAll();
+
+			List <Fabricante> nombreCodFab = listFab.stream().sorted(comparing(Fabricante::getNombre)).collect(toList());
+//			List<Producto> productoFab = listProd.stream().sorted(comparing(p -> p.getFabricante())).collect(toList());
+
+
+			List<Producto> productos = listProd.stream().
+
 			//TODO STREAMS
 			
 			prodHome.commitTransaction();
