@@ -939,7 +939,7 @@ Monitor 27 LED Full HD |199.25190000000003|Asus
 											.collect(toList());
 
 
-			System.out.println("Producto        " + "                  Precio              " + "Fabricante  ");
+			System.out.println("Producto        " + "                  Precio     " + "Fabricante  ");
 			System.out.println("--------------------------------------------------------------------");
 
             for (Producto producto : prod) {
