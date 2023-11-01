@@ -1250,8 +1250,15 @@ Fabricante: Xiaomi
 		
 			List<Producto> listProd = prodHome.findAll();		
 						
-			//TODO STREAMS
-			
+			List<Producto> prodAsus = listProd.stream().filter(p -> p.getFabricante().getNombre().equals("Asus")).collect(toList());
+			double media = prodAsus.stream().map(Producto::getPrecio).reduce(0.0, Double::sum) / prodAsus.size();
+
+			System.out.println("Hay " + prodAsus.size() + " Asus");
+			System.out.println("La media de precio de los productos " + prodAsus.get(0).getNombre() + " y " + prodAsus.get(1).getNombre() + " es de  " + media);
+
+
+
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -1274,8 +1281,8 @@ Fabricante: Xiaomi
 			prodHome.beginTransaction();
 		
 			List<Producto> listProd = prodHome.findAll();
-						
-			//TODO STREAMS
+
+			//TODO STREAMS /*HACER!!!!!*/
 			
 			prodHome.commitTransaction();
 		}
