@@ -2,13 +2,10 @@ package org.iesvegademijas.stream.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.SQLOutput;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 import static java.util.Comparator.*;
@@ -17,10 +14,8 @@ import org.iesvegademijas.hibernate.Fabricante;
 import org.iesvegademijas.hibernate.FabricanteHome;
 import org.iesvegademijas.hibernate.Producto;
 import org.iesvegademijas.hibernate.ProductoHome;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.w3c.dom.ls.LSOutput;
 
 
 class TiendaTest {
@@ -316,7 +311,7 @@ class TiendaTest {
 			listProd.stream().sorted(comparing(Producto::getNombre).
 					thenComparing(comparing(Producto::getPrecio).reversed()))
 					.map(p -> p.getNombre() + " - " + p.getPrecio()).
-					forEach(s -> System.out.println(s));
+					forEach(System.out::println);
 
 			Assertions.assertEquals(86.99, listProd.get(0).getPrecio());
 
@@ -732,9 +727,9 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			List<Producto> nombresMonitor = listProd.stream().filter(p -> p.getNombre().contains("Monitor") &&
-							p.getPrecio() <= 215)
-					.collect(toList());
+			List<Producto> nombresMonitor = listProd.stream().filter(p -> p.getNombre().contains("Monitor")
+							|| p.getNombre().contains("monitor") && p.getPrecio() <= 215)
+							.collect(toList());
 
 			System.out.println(nombresMonitor);
 			Assertions.assertTrue(nombresMonitor.get(0).getNombre().contains("Monitor"));
@@ -798,7 +793,7 @@ class TiendaTest {
 							.collect(toList());
 
 			System.out.println(prods);
-			Assertions.assertTrue(prods.get(0).getFabricante().getNombre().indexOf("A") == 0);
+			assertEquals(0, prods.get(0).getFabricante().getNombre().indexOf("A"));
 			// el primer producto tiene como nombre de fabricante una palabra que empieza por A (asus)
 
 
@@ -823,7 +818,10 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			List<Producto> prodCaro = listProd.stream().sorted(comparing(Producto::getPrecio).reversed()).limit(1).collect(toList());
+			List<Producto> prodCaro = listProd.stream()
+					.sorted(comparing(Producto::getPrecio).reversed())
+					.limit(1)
+					.collect(toList());
 			System.out.println(prodCaro);
 			prodHome.commitTransaction();
 		}
@@ -846,11 +844,13 @@ class TiendaTest {
 		
 			List<Producto> listProd = prodHome.findAll();
 			
-			List<Producto> crucial = listProd.stream().filter(p->p.getFabricante().getNombre().equals("Crucial")
-					&& p.getPrecio() > 200).collect(toList());
+			List<Producto> crucial = listProd.stream()
+					.filter(p->p.getFabricante().getNombre().equals("Crucial")  && p.getPrecio() > 200)
+					.collect(toList());
 
 			System.out.println(crucial);
-			Assertions.assertTrue(crucial.get(0).getPrecio()>200 && crucial.get(0).getFabricante().getNombre().equals("Crucial"));
+			Assertions.assertTrue(crucial.get(0).getPrecio()>200
+					&& crucial.get(0).getFabricante().getNombre().equals("Crucial"));
 			
 			prodHome.commitTransaction();
 		}
@@ -1148,10 +1148,13 @@ Fabricante: Xiaomi
 		try {
 			prodHome.beginTransaction();
 		
-			List<Producto> listProd = prodHome.findAll();		
+			List<Producto> listProd = prodHome.findAll();
+
+
+			double media = listProd.stream().map(Producto::getPrecio).reduce(0.0, Double::sum) / listProd.size();
+			System.out.println(media);
 						
-			//TODO STREAMS
-			
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -1173,9 +1176,13 @@ Fabricante: Xiaomi
 		
 			List<Producto> listProd = prodHome.findAll();		
 						
-			//TODO STREAMS
-			
+
+			Optional<Double> precioBarato = listProd.stream().map(Producto::getPrecio).reduce(Double::min);
+			System.out.println(precioBarato);
 			prodHome.commitTransaction();
+
+
+
 		}
 		catch (RuntimeException e) {
 			prodHome.rollbackTransaction();
@@ -1194,10 +1201,10 @@ Fabricante: Xiaomi
 		try {
 			prodHome.beginTransaction();
 		
-			List<Producto> listProd = prodHome.findAll();		
-						
-			//TODO STREAMS
-			
+			List<Producto> listProd = prodHome.findAll();
+
+			double suma = listProd.stream().map(Producto::getPrecio).reduce(0.0, Double::sum);
+			System.out.println(suma);
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -1219,8 +1226,9 @@ Fabricante: Xiaomi
 		
 			List<Producto> listProd = prodHome.findAll();		
 						
-			//TODO STREAMS
-			
+			long prodAsus = listProd.stream().filter(p -> p.getFabricante().getNombre().equals("Asus")).count();
+			System.out.println(prodAsus);
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
