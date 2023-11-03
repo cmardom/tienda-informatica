@@ -4,7 +4,7 @@
     <data-source source="LOCAL" name="tienda@localhost" uuid="8ada2561-a1c3-48e1-9233-8814039053a6">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/tienda</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
@@ -15,7 +15,7 @@
       <remarks>Hibernate
 
 /home/carmen/IdeaProjects/tienda-informatica/src/hibernate.cfg.xml</remarks>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/tienda</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>

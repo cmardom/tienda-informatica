@@ -1279,27 +1279,21 @@ Fabricante: Xiaomi
 		
 			List<Producto> listProd = prodHome.findAll();
 
-//			//TODO STREAMS /*HACER!!!!!*/
-//			Double[] statistics = listProd.stream()
-//					.mapToDouble(Producto::getPrecio)
-//					.collect(
-//							() -> new Double[] { Double.MIN_VALUE, Double.MAX_VALUE, 0.0, 0.0 },
-//							(acc, price) -> {
-//								acc[0] = Math.max(acc[0], price); // Maximum price
-//								acc[1] = Math.min(acc[1], price); // Minimum price
-//								acc[2] += price; // Sum of prices
-//								acc[3]++; // Count of products
-//							},
-//							(acc1, acc2) -> {
-//								acc1[0] = Math.max(acc1[0], acc2[0]);
-//								acc1[1] = Math.min(acc1[1], acc2[1]);
-//								acc1[2] += acc2[2];
-//								acc1[3] += acc2[3];
-//							}
-//					);
-//
-//			System.out.println(statistics);
-			
+			Double[]aD = listProd.stream().filter(p-> "Crucial".equals(p.getFabricante().getNombre()))
+							.map(p-> new Double[] {p.getPrecio(), p.getPrecio(), null, p.getPrecio()})
+									.reduce(new Double[] {null, null, 0.0d, 0.0d}, (ant, act) -> {
+				if (ant[0] != null) act[0] = Math.max(ant[0], act[0]);
+				if (ant[1] != null) act[1] = Math.max(ant[1], act[1]);
+
+				act[2] = ant[2] +1;
+				act[3] = ant[3] + ant[3];
+
+				return act;
+
+			});
+			Arrays.stream(aD).forEach(System.out::println);
+
+
 			prodHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -1341,23 +1335,23 @@ Hewlett-Packard              2
 				
 			//TODO STREAMS
 		
-//			fabHome.commitTransaction();
-//			System.out.println("Fabricante         #Productos");
-//			System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-//			long cantidad = 0;
-////			long prods = listProd.stream().filter(producto -> !producto.getNombre().isEmpty()).count();
-//			List<String> nombre = listFab.stream().map(Fabricante::getNombre).collect(toList());
-//			for (int i = 0; i < nombre.size(); i++) {
-//				String fabricante = nombre.get(i);
-//
-//				if (listFab.get(i).getNombre().equals(fabricante)){
-//					cantidad = listFab.get(i).getProductos().size();
-//				}
-//
-//
-//				String formattedLine = String.format("%-15s%6d", fabricante, cantidad);
-//				System.out.println(formattedLine);
-//			}
+			fabHome.commitTransaction();
+			System.out.println("Fabricante         #Productos");
+			System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+			long cantidad = 0;
+//			long prods = listProd.stream().filter(producto -> !producto.getNombre().isEmpty()).count();
+			List<String> nombre = listFab.stream().map(Fabricante::getNombre).collect(toList());
+			for (int i = 0; i < nombre.size(); i++) {
+				String fabricante = nombre.get(i);
+
+				if (listFab.get(i).getNombre().equals(fabricante)){
+					cantidad = listFab.get(i).getProductos().size();
+				}
+
+
+				String formattedLine = String.format("%-15s%6d", fabricante, cantidad);
+				System.out.println(formattedLine);
+			}
 
 		}
 		catch (RuntimeException e) {
