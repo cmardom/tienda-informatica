@@ -1375,8 +1375,21 @@ Hewlett-Packard              2
 				
 			List<Fabricante> listFab = fabHome.findAll();
 				
-			//TODO STREAMS
-		
+			List<String> fabString = listFab.stream().map(f -> {Double[] arrayDouble = f.getProductos().stream()
+							.map( p -> new Double[] {p.getPrecio(), p.getPrecio(), null, p.getPrecio()})
+							.reduce(new Double [] {null, null, null, 0.0d, 0.0d}, (ant, act) -> {
+								if (ant[0] != null) act[0] = Math.max(ant[0],act[0]);
+								if (ant[1] != null) act[1] = Math.min(ant[1],act[1]);
+
+								act[2] = ant[2] +1;
+								act[3] = ant[3] + act[3];
+
+								return act;
+							});
+				return "Fabricante: " + f.getNombre() + " | Precio Max. = " + arrayDouble[0] + ", Precio Mín. = " + arrayDouble[1] + ", Precio medio = " + (arrayDouble[3] / arrayDouble[2]);
+			}).collect(toList());
+			/*IMPRIMIR BIEN*/
+			fabString.forEach(System.out::println);
 			fabHome.commitTransaction();
 		}
 		catch (RuntimeException e) {
@@ -1426,6 +1439,10 @@ Hewlett-Packard              2
 			System.out.println("Fabricantes con dos o mas productos: " + dosOMas);
 
 			Assertions.assertTrue(dosOMas.get(0).getProductos().size() >= 2);
+
+			//List<String> lstStr = listFab.stream().filter(f -> f.getProductos().size() >= 2).map(Fabricante::getNombre).collect(toList());
+			//
+			//			lstStr.forEach(System.out::println);
 		
 			fabHome.commitTransaction();
 		}
